@@ -1,25 +1,18 @@
-workflows:
-  version: 2
-  build-deploy:
-    jobs:
-      - build
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
-
 version: 2
 jobs:
   build:
     docker:
-
       - image: circleci/python:3.6.2-stretch-browsers
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
         environment:
           FLASK_CONFIG: testing
           TEST_DATABASE_URL: postgresql://ubuntu@localhost/circle_test?sslmode=disable
       - image: circleci/postgres:9.6.5-alpine-ram
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
         environment:
           POSTGRES_USER: ubuntu
           POSTGRES_DB: circle_test
@@ -29,7 +22,7 @@ jobs:
       - restore_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
       - run:
-          name: venv への Python deps インストール
+          name: Install Python deps in a venv
           command: |
             python3 -m venv venv
             . venv/bin/activate
@@ -51,6 +44,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Heroku への Master のデプロイ
+          name: Deploy Master to Heroku
           command: |
             git push https://heroku:1a438ee7-d51d-4c09-b11e-834a9c8431f4@git.heroku.com/flask-test-kenken.git master
