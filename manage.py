@@ -10,5 +10,5 @@ class TestFlaskHello(unittest.TestCase):
 
     def test_get(self):
         response = self.app.get('/')
-        assert response.status_code == 200
+        assert response.status_code == 404
         assert response.data == 'Hello, World!'
