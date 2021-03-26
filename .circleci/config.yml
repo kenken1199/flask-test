@@ -1,13 +1,18 @@
-version: 2.1
+jobs:
+  deploy:
+    executor: heroku/default
+    steps:
+      - checkout
+      - heroku/install
+      - run:
+          command: >
+            echo "The command above installs Heroku, the command below deploys.
+            What you do inbetween is up to you!"
+      - heroku/deploy-via-git
 orbs:
-  heroku-container: pbrisbin/heroku-container@1.0.0
+  heroku: circleci/heroku@x.y
+version: 2.1
 workflows:
-  build_and_release:
+  heroku_deploy:
     jobs:
-      - heroku-container/push-and-release:
-          app-name: flask-test-kenken
-          # masterブランチへのpushでのみ反応 go
-          filters:
-                branches:
-                    only:
-                    - master
+      - deploy
