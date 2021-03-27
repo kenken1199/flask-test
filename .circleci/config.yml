@@ -13,7 +13,7 @@ jobs:
       - run:
           command: |
             . venv/bin/activate
-            python flask-test.py test
+            python flask-test.py
   deploy:
     executor: heroku/default
     steps:
