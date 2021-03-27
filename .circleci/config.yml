@@ -1,4 +1,20 @@
 jobs:
+  build:
+    docker:
+      - image: circleci/python:3.6.2-stretch-browsers
+    steps:
+      - checkout
+      - run: mkdir test-reports
+      - run:
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements/txt
+      - run:
+          command: |
+            . venv/bin/activate
+            python manage.py test
+jobs:
   deploy:
     executor: heroku/default
     steps:
@@ -13,6 +29,13 @@ orbs:
   heroku: circleci/heroku@1.2.6
 version: 2.1
 workflows:
-  heroku_deploy:
+  version: 2
+  build-deploy:
     jobs:
-      - deploy
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
