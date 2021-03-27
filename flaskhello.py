@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def hello():
-    return 'complete', 200
+    return 'from komeda', 200
 
 if __name__ == '__main__':
     app.run()
